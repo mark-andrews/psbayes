@@ -364,3 +364,77 @@ mtext('$\\textrm{P}(\\lambda)$', side=2, line=4.0)
 
 dev.off()
 
+#### Normal likelihood and priors stuff #####
+source('../code/normal.data.R')
+source('../code/normal.R')
+
+tikz(file='normal.likelihood.tex',
+     standAlone=F,
+     width = beamer.parms$paperwidth * 0.75, 
+     height = beamer.parms$paperheight * 0.6)
+
+par(cex.lab=1.2,
+    cex.axis=1.0,
+    mar = c(4,5,1,0) )
+
+contour(mu.lim, 
+        sigma.lim, 
+        xlim=c(3.2, 5),
+        ylim=c(0.8, 2.1),
+        L,
+        nlevels = 5,
+        axes=F,
+        ylab='',
+        xlab='')
+
+x.new <- seq(3.2, 5, length.out=7)
+axis(1, at=x.new, labels=round(x.new, 2), col.axis="black", las=1)
+mtext('$\\theta$', side=1, line=3)
+
+y.ticks <- seq(0.8, 2.1, length.out=5)
+axis(2, at=y.ticks, labels=round(y.ticks, 2), col.axis="black", las=1)
+mtext('$\\sigma$', side=2, line=4)
+
+dev.off()
+
+########################################################################
+source('../code/normal.R')
+source('../code/invgamma.R')
+tikz(file='scaled.inv.chisq.tex',
+     standAlone=F,
+     width = beamer.parms$paperwidth * 0.9, 
+     height = beamer.parms$paperheight * 0.75)
+
+colors <- c('chocolate',
+            'coral4',
+            'salmon',
+            'cadetblue4')
+n <- 1e3
+nu <- c(5, 10, 2, 1)
+tau <- c(1.1, 2, 2, 1)
+
+par(cex.lab=1.2,
+    cex.axis=1.0,
+    mar = c(4,5,1,0) )
+
+curve(dinvchisq(x, nu[1], tau[1]), from=0.0, to=10.0, col=colors[1], axes=F, n=n, xlab='', ylab='')
+curve(dinvchisq(x, nu[2], tau[2]), from=0.0, to=10.0, n=n, col=colors[2], add=T)
+curve(dinvchisq(x, nu[3], tau[3]), from=0.0, to=10.0, col=colors[3], add=T, n=n)
+curve(dinvchisq(x, nu[4], tau[4]), from=0.0, to=10.0, col=colors[4], add=T, n=n)
+
+labels <- c()
+for (k in c(1,2,3,4)){
+  labels <- c(labels, paste("$\\nu = ", nu[k], "$,  $\\tau = ", tau[k], "$", sep=''))
+}
+legend(5, 0.5, legend=labels, col=colors, lwd=1, border=NA, bty='n')
+
+
+x.new <- seq(0, 10, length.out=10)
+axis(1, at=x.new, labels=round(x.new, 2), col.axis="black", las=1)
+mtext('$x$', side=1, line=3)
+
+y.ticks <- seq(0.0, 0.6, by=0.1)
+axis(2, at=y.ticks, labels=round(y.ticks, 2), col.axis="black", las=1)
+mtext('$P(x\\vert \\nu, \\tau^2)$', side=2, line=4)
+
+dev.off()
