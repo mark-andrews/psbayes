@@ -2,8 +2,13 @@ library(brms)
 library(dplyr)
 library(readr)
 
-Df <- read_csv("../../data/diagram.csv") %>% 
+Df <- read_csv("data/diagram.csv") %>% 
   select(-X1)
+
+ggplot(Df,
+       aes(x = group, y = descript, col = group)
+) + geom_boxplot()
+
 
 M_null <- brm(descript ~ 1, Df, save_all_pars = T)
 summary(M_null)
