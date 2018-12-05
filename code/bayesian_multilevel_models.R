@@ -41,6 +41,26 @@ waic(M_ri, M)
 loo(M_ri, M)
 bayes_factor(M_ri, M)
 
+# Nested models
+Df <- read_csv('data/science.csv')
+
+M_2 <- brm(like ~ sex + PrivPub + (1|school) + (1|Class), 
+            cores = 2,               
+            prior = set_prior('normal(0, 100)'), # flat prior on coefs
+            save_all_pars = T,
+            data = Df)
+
+
+# Ordinal logistic 
+# M_3 <- brm(like ~ sex + PrivPub + (1|school) + (1|Class), 
+#            cores = 2,               
+#            prior = set_prior('normal(0, 100)'), # flat prior on coefs
+#            save_all_pars = T,
+#            family=cumulative("logit"), 
+#            data = Df)
+
+
+# consider using control = list(adapt_delta = 0.95)
 
 # Multilevel logistic regression
 Df %<>% mutate(fast_rt = Reaction < median(Reaction))
