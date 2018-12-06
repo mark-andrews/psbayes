@@ -76,4 +76,32 @@ M_bayes <- brm(affairs ~ gender + age + yearsmarried
 summary(M_bayes)
 marginal_effects(M_bayes)
 
+#### Nonlinear regression
+Ms_1 <- brm(bf(affairs ~ s(yearsmarried, k=3) + gender), 
+            data=Df, 
+            cores = 2, 
+            family = poisson(),
+            prior = set_prior('normal(0, 100)'), 
+            save_all_pars = T)
+
+# Consider using
+# control = list(adapt_delta = 0.99,
+#                max_treedepth = 20)
+
+Df$gender <- factor(Df$gender)
+Ms_2 <- brm(bf(affairs ~ s(yearsmarried, k=3, by=gender)), 
+            data=Df, 
+            cores = 2, 
+            family = poisson(),
+            prior = set_prior('normal(0, 100)'), 
+            save_all_pars = T)
+
+#### Zero inflation
+Mzip <- brm(affairs ~ yearsmarried, 
+            data = Df, 
+            family = zero_inflated_poisson())
+
+Mzip2 <- brm(bf(affairs ~ yearsmarried, zi ~ yearsmarried), 
+            data = Df, 
+            family = zero_inflated_poisson())
 
