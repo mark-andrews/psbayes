@@ -2,7 +2,6 @@ library(readr)
 library(dplyr)
 library(ggplot2)
 library(brms)
-libray(psc)
 
 Df <- read_csv('data/affairs.csv')
 
@@ -58,13 +57,8 @@ bayes_factor(M_bayes_null, M_bayes)
 
 #### All variables
 
-M <- glm(affairs ~ gender + age + yearsmarried
-         + children + religiousness + education
-         + occupation + rating, 
-         data=Df, 
-         family=poisson)
 
-M_bayes <- brm(affairs ~ gender + age + yearsmarried
+M_bayes_full <- brm(affairs ~ gender + age + yearsmarried
                + children + religiousness + education
                + occupation + rating,  
                data=Df, 
@@ -73,8 +67,6 @@ M_bayes <- brm(affairs ~ gender + age + yearsmarried
                prior = set_prior('normal(0, 100)'), 
                save_all_pars = T)
 
-summary(M_bayes)
-marginal_effects(M_bayes)
 
 #### Nonlinear regression
 Ms_1 <- brm(bf(affairs ~ s(yearsmarried, k=3) + gender), 
@@ -96,12 +88,28 @@ Ms_2 <- brm(bf(affairs ~ s(yearsmarried, k=3, by=gender)),
             prior = set_prior('normal(0, 100)'), 
             save_all_pars = T)
 
-#### Zero inflation
-Mzip <- brm(affairs ~ yearsmarried, 
+#### Zero inflated Poisson model
+
+# Model probability of zero as fixed constant 
+Mzip <- brm(affairs ~ gender + age + yearsmarried
+            + children + religiousness + education
+            + occupation + rating, 
             data = Df, 
+            cores = 2, 
+            prior = set_prior('normal(0, 100)'), 
             family = zero_inflated_poisson())
 
-Mzip2 <- brm(bf(affairs ~ yearsmarried, zi ~ yearsmarried), 
-            data = Df, 
-            family = zero_inflated_poisson())
+# Compare with M_bayes_full above
+waic(M_bayes_full, Mzip)
 
+# Model probability of zero a ilogit function of all variables
+Mzip2 <- brm(bf(affairs ~ gender + age + yearsmarried
+                + children + religiousness + education
+                + occupation + rating, 
+                zi ~ gender + age + yearsmarried
+                + children + religiousness + education
+                + occupation + rating), 
+             data = Df, 
+             cores = 2, 
+             prior = set_prior('normal(0, 100)'), 
+             family = zero_inflated_poisson())

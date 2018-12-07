@@ -2,9 +2,9 @@ library(tibble)
 library(brms)
 
 # ------- Data setup --------
-set.seed(10101) # Omit or change this if you like
+set.seed(1001) # Omit or change this if you like
 
-N <- 25
+N <- 250
 
 x_1 <- rnorm(N)
 x_2 <- rnorm(N)
@@ -35,7 +35,7 @@ M_bayes <- brm(y ~ x_1 + x_2,
                chains = 4, # 4 chains is typical
                iter = 2500,
                warmup = 1000, # these are initilization etc iterations
-               prior = set_prior('normal(0, 100)'), # flat prior on coefs
+               #prior = set_prior('normal(0, 100)'), # flat prior on coefs
                seed = 101011, # for reproducibility
                save_all_pars = T # needed for bayes_factor
 )

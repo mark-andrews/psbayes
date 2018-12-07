@@ -36,3 +36,4 @@ sample.f <- function(n){
 par(mfrow=c(2,1))
 hist(sample.f(n.samples/2), 100, xlim=c(0, qchisq(.999, df=chisq.df)))
 hist(X.samples[(n.samples/2):n.samples], 100, xlim=c(0, qchisq(.999, df=chisq.df)))
+
