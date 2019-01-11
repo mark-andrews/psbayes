@@ -74,11 +74,11 @@ Ms_1 <- brm(bf(affairs ~ s(yearsmarried, k=3) + gender),
             cores = 2, 
             family = poisson(),
             prior = set_prior('normal(0, 100)'), 
+             control = list(adapt_delta = 0.99,
+                            max_treedepth = 20),
             save_all_pars = T)
 
 # Consider using
-# control = list(adapt_delta = 0.99,
-#                max_treedepth = 20)
 
 Df$gender <- factor(Df$gender)
 Ms_2 <- brm(bf(affairs ~ s(yearsmarried, k=3, by=gender)), 
@@ -113,3 +113,22 @@ Mzip2 <- brm(bf(affairs ~ gender + age + yearsmarried
              cores = 2, 
              prior = set_prior('normal(0, 100)'), 
              family = zero_inflated_poisson())
+
+
+Mzip <- brm(affairs ~ gender, 
+            data = Df, 
+            cores = 2, 
+            prior = set_prior('normal(0, 100)'), 
+            family = zero_inflated_poisson())
+
+M <- brm(affairs ~ gender, 
+         data = Df, 
+         cores = 2, 
+         prior = set_prior('normal(0, 100)'), 
+         family = poisson())
+
+M_1 <- brm(bf(affairs ~ gender, zi ~ gender), 
+           data = Df, 
+           cores = 2, 
+           prior = set_prior('normal(0, 100)'), 
+           family = zero_inflated_poisson())

@@ -7,7 +7,7 @@ Df <- sleepstudy # rename the data frame
 
 # Visualize it
 ggplot(Df,
-       aes(x=Days, y=Reaction)
+       aes(x=Days, y=Reaction, col=Subject)
 ) + geom_point() +
   stat_smooth(method='lm', se=F, size=0.5) +
   facet_wrap(~Subject) +
@@ -27,13 +27,13 @@ M_ri <- brm(Reaction ~ Days + (1|Subject),
 
 # Random intercepts and random slopes model
 M_lmer <- lmer(Reaction ~ Days + (Days|Subject),
-                  data = Df)
+               data = Df)
 
 M <- brm(Reaction ~ Days + (Days|Subject),
-            cores = 2,               
-            prior = set_prior('normal(0, 100)'), # flat prior on coefs
-            save_all_pars = T,
-            data = Df)
+         cores = 2,               
+         prior = set_prior('normal(0, 100)'), # flat prior on coefs
+         save_all_pars = T,
+         data = Df)
 
 
 # Model comparison

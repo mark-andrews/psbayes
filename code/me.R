@@ -1,6 +1,7 @@
 library(tibble)
 library(brms)
 
+#set.seed(1010101)
 N <- 250
 
 me_sd <- 0.25
@@ -17,6 +18,9 @@ mu <- beta_0 + beta_1 * x_true
 y <- mu + rnorm(N, mean=0, sd=sigma)
 
 Df <- tibble(x = x_obs, y = y, sdx = me_sd)
+# ============================================
+
+
 
 M <- brm(y ~ me(x, sdx), 
          data = Df,

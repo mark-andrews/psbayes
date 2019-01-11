@@ -8,7 +8,7 @@ parameters {
 }
 
 model {
-  theta ~ beta(1, 1);
-  m ~ binomial(n, theta);
+  theta ~ beta(1, 1); // prior
+  m ~ binomial(n, theta); // foo
 }
 
